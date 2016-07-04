@@ -1,6 +1,6 @@
 # webpack-starter
 
-Clean projects to use Webpack with Angular
+Nude projects to use Webpack with Angular
 
 ## License
 
