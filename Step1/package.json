@@ -22,6 +22,9 @@
   "homepage": "https://github.com/Bogala/webpack-starter#readme",
   "devDependencies": {
     "angular": "^1.5.7",
+    "angular-animate": "^1.5.7",
+    "angular-aria": "^1.5.7",
+    "angular-material": "^1.1.0-rc.5",
     "angular-route": "^1.5.7",
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",
