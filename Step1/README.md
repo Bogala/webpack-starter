@@ -113,3 +113,72 @@ Vous devriez voir apparaître un nouveau répertoire `dist` contenant un fichier
 /***/ }
 /******/ ]);
 ```
+Vous pouveez remarquer quelques lignes préfixées de `/******/`.
+En fait, Webpack encapsule le code des différents fichiers du bundle pour gérer au mieux les dépendances.
+
+Aux vues du code d'origine, l'intérêt n'est pas flagrand mais nous aurons l'occasion d'y revenir.
+
+##Création du fichier index.html
+Attaqons maintenant notre `index.pug`. Souvenez-vous, Webpack n'est pas prévu, d'origine, à s'attaquer à des fichiers autres que `js` autrement que par dépendance.
+
+Pour corriger ce manquement, il existe un plugin que nous avons déjà installé (`html-webpack-plugin`).
+
+Il suffit donc maintenant de le déclarer et l'utiliser dans notre `webpack.conf.js`
+```javascript
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+
+[...]
+
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: './src/index.pug'
+        })
+    ]
+```
+
+Puisque nous utilisons un outil de templating (`pug`), nous devons aussi le déclarer
+
+```javascript
+    module: {
+        loaders: [
+            {
+                test: /\.pug$/,
+                loader: 'pug-html'
+            }
+        ]
+    },
+```
+
+L'ensemble de ces lignes nous permettra de compiler notre `./src/index.pug` vers `./dist/index.html`
+
+Si nous relançons la commande 
+```shell
+$ webpack
+```
+
+Nous obtenons un fichier index.html contenant le pug compilé plus une référence au bundle javascript généré précédemment.
+
+## Création des tâches
+Bon, lancer la commande `webpack` à chaque modification de code mais ça risque de fatiguer à la longue.
+
+Je vous propose donc de se créer deux tâches NPM pour nous aider.
+
+Dans votre `package.json`, modifions le noeud script comme suit :
+```javascript
+  "scripts": {
+    "build": "webpack --bail --progress --profile",
+    "dev": "webpack --bail --progress --profile --watch"
+  },
+```
+Comme vous avez dû le comprendre, la tâche build fait exactement la même chose que ce que nous faisions précédemment.
+La tâche dev, en revenche, y ajoute le mode `watch` qui scrute les fichiers sources et met à jour les bundles à chaque modification de code.
+
+Une question devrait vous taroder : "Mais que sont ces arguments bail, progress et profile?"
+
+Vous pouvez tester en lançant la task `dev` et en modifiant votre code javascript
+```shell
+$ npm run dev
+```
+
+
