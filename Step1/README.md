@@ -175,10 +175,27 @@ Comme vous avez dû le comprendre, la tâche build fait exactement la même chos
 La tâche dev, en revenche, y ajoute le mode `watch` qui scrute les fichiers sources et met à jour les bundles à chaque modification de code.
 
 Une question devrait vous taroder : "Mais que sont ces arguments bail, progress et profile?"
+ - `--profile` permet d'afficher le détail des actions effectuées par Webpack
+ - `--progress` permet d'afficher la progression globale (en pourcentage)
+
+D'autres options sont possible, vous aurez plus de détails sur cette [page](http://webpack.github.io/docs/cli.html).
 
 Vous pouvez tester en lançant la task `dev` et en modifiant votre code javascript
 ```shell
 $ npm run dev
 ```
 
+##Plus loin... Un peu de javascript avec AngularJS?
+Voilà, il est temps, maintenant, de passer la seconde et de créer une vraie application Javascript via [AngularJS](https://angularjs.org/) et [Angular Material](https://material.angularjs.org/).
 
+Pour commencer, importons les packages npm nécessaires :
+```shell
+npm install angular angular-route angular-animate angular-aria angular-material --save
+```
+Il est à noter que angular-animate et angular-aria sont des pré-requis à angular-material. En effet, si vous oubliez
+de les importer, l'installation d'angular-material vous le rappellera.
+
+Nous pouvons donc maintenant modifier notre fichier index.js pour y créer notre application angularJS.
+```javascript
+//Work in progress
+```
