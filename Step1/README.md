@@ -1,7 +1,7 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
-#Ma première application web via Webpack
+# Ma première application web via Webpack
 
-##Entrons dans le vif du sujet. 
+## Entrons dans le vif du sujet. 
 Avant toute chose, il nous faut de quoi travailler :
  - Un IDE (VS Code, WebStorm ou encore Visual Studio)
  - NodeJS installé (6.2+)
@@ -39,9 +39,9 @@ Ajoutons-y un fichier index.js
 ```javascript
 alert("It work !");
 ```
-##Passons au vif du sujet
+## Passons au vif du sujet
 Nous allons maintenant configurer notre Webpack.
-###Création du fichier bundle.js
+### Création du fichier bundle.js
 Créons notre fichier de configuration Webpack (`webpack.config.js`)
 ```javascript
 var path = require('path');
@@ -118,7 +118,7 @@ En fait, Webpack encapsule le code des différents fichiers du bundle pour gére
 
 Aux vues du code d'origine, l'intérêt n'est pas flagrand mais nous aurons l'occasion d'y revenir.
 
-##Création du fichier index.html
+## Création du fichier index.html
 Attaqons maintenant notre `index.pug`. Souvenez-vous, Webpack n'est pas prévu, d'origine, à s'attaquer à des fichiers autres que `js` autrement que par dépendance.
 
 Pour corriger ce manquement, il existe un plugin que nous avons déjà installé (`html-webpack-plugin`).
@@ -185,10 +185,11 @@ Vous pouvez tester en lançant la task `dev` et en modifiant votre code javascri
 $ npm run dev
 ```
 
-##Plus loin... Un peu de javascript avec AngularJS?
+## Plus loin... Un peu de javascript avec AngularJS?
 Voilà, il est temps, maintenant, de passer la seconde et de créer une vraie application Javascript via [AngularJS](https://angularjs.org/) et [Angular Material](https://material.angularjs.org/).
 
 Pour commencer, importons les packages npm nécessaires :
+
 ```shell
 npm install angular angular-route angular-animate angular-aria angular-material --save
 ```
@@ -196,6 +197,57 @@ Il est à noter que angular-animate et angular-aria sont des pré-requis à angu
 de les importer, l'installation d'angular-material vous le rappellera.
 
 Nous pouvons donc maintenant modifier notre fichier index.js pour y créer notre application angularJS.
+
 ```javascript
-//Work in progress
+import angular from 'angular'
+
+/**
+ * Manually bootstrap the application when AngularJS and
+ * the application classes have been loaded.
+ */
+angular
+    .element( document )
+    .ready( function() {
+
+        let appName = 'starter-app';
+
+        let body = document.getElementsByTagName("body")[0];
+        let app  = angular
+            .module( appName, [] );
+
+        angular.bootstrap( body, [ app.name ], { strictDi: false })
+
+    });
 ```
+Nous n'aurons pas besoin de modifier spécifiquement notre pug puisque notre code JavaScript le fait pour nous.
+
+Bon, c'est bien joli tout ça mais il va aussi nous falloir de quoi faire du design. Et pour ça, rien de mieux qu'Angular Material.
+Ajoutons donc ce qu'il nous faut pour charger le style et les directives Angular Material en remplaçant 
+
+```javascript
+import angular from 'angular'
+```
+
+par 
+
+```javascript
+
+import 'angular-material/angular-material.css!'
+
+
+import angular from 'angular'
+import material from 'angular-material'
+```
+
+puis ajoutons le module dans l'application AngularJS
+
+```javascript
+        let app  = angular
+            .module( appName, [ material ] );
+```
+
+Mince, notre configuration actuelle de Webpack ne sait pas interpréter le CSS!
+Installons les modules npm
+ ```shell
+ $ npm install css-loader style-loader --save-dev
+ ```
