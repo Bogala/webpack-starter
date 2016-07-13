@@ -42,6 +42,6 @@ De plus, il a été pensé pour permettre diviser votre package en plusieurs bun
 Webpack est déjà très populaire mais majoritairement dans la communauté ReactJS.
 
 Je vous proposerai donc, plutôt, un petit Tutoriel avec `AngularJS` en trois étapes :
-- __Etape 1__ : Les bases pour une première application
+- [__Etape 1__ : Les bases pour une première application](https://github.com/Bogala/webpack-starter/tree/master/Step1)
 - __Etape 2__ : La gestion des tests unitaires avec `Karma` pour `Webpack`
 - __Etape 3__ : Routing et Lazy Loading
