@@ -247,6 +247,7 @@ puis ajoutons le module dans l'application AngularJS
 ```
 
 Mince, notre configuration actuelle de Webpack ne sait pas interpréter le CSS!
+
 Installons les modules npm
  ```shell
  $ npm install css-loader style-loader --save-dev
