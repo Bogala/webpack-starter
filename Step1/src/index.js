@@ -1,13 +1,15 @@
 // Load the Angular Material CSS associated with ngMaterial
 // then load the main.css to provide overrides, etc.
 
-import 'angular-material/angular-material.css!'
-import 'assets/app.css!'
+import 'angular-material/angular-material.css'
 
 // Load Angular libraries
 
 import angular from 'angular'
-import material from 'angular-material'
+// Animation
+import angularAnimate from 'angular-animate';
+// Materail Design lib
+import angularMaterial from 'angular-material';
 
 
 /**
@@ -22,7 +24,7 @@ angular
 
         let body = document.getElementsByTagName("body")[0];
         let app  = angular
-            .module( appName, [ material ] );
+            .module( appName, [ angularAnimate, angularMaterial ] );
 
         angular.bootstrap( body, [ app.name ], { strictDi: false })
 

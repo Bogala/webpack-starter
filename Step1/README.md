@@ -1,5 +1,5 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
-# Ma première application web via Webpack
+# Etape 1 : les bases 
 
 ## Entrons dans le vif du sujet. 
 Avant toute chose, il nous faut de quoi travailler :
@@ -252,3 +252,58 @@ Installons les modules npm
  ```shell
  $ npm install css-loader style-loader --save-dev
  ```
+
+ Profitons-en aussi, puisque nous avons commencé nos développements en ES2015, pour installer et configurer Babel
+ ```shell
+ $ npm install --save-dev babel-core babel-preset-es2015 babel-loader
+ ```
+ Ceci nous servira à avoir des bundles en ES5 (compatible avec un maximum d'explorateurs web).
+
+ Puis, adaptons notre configuration en ajoutant les loaders CSS et Babel à notre liste de modules
+ ```javascript
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loaders: ['babel?presets[]=es2015']
+            },
+            {
+                test: /\.css$/,
+                loader: "style!css"
+            },
+            {
+                test: /\.pug$/,
+                loader: 'pug-html'
+            }
+        ]
+    },
+ ```
+ Il est à noter que les loaders sont chargés de bas en haut dans cette liste. 
+
+Voyons ce qui se passe lorsque nous lançons la tâche 'dev'
+```shell
+$ npm run dev
+```
+
+Tout se détroule, normalement, bien mais comment vérifier tout ça dans son explorateur web?
+
+En gros, vous avez deux solutions : installer et configurer un Apache ou un IIS... ou pas...
+Voyons ensemble cette deuxième solution par la pratique : installons un nouveau package npm :
+```shell
+$ npm install --save-dev webpack-dev-server
+``` 
+
+Puis ajoutons une nouvelle tâche dans notre package.json :
+```json
+  "scripts": {
+    "build": "webpack --bail --progress --profile -p",
+    "dev": "webpack --bail --progress --profile -d --watch",
+    "devserver": "webpack-dev-server --port 9100 --progress --colors"
+  },
+```
+
+Avec cette nouvelle tâche, vous aurez donc maintenant un serveur nodejs qui fera tourner votre application web.
+Je n'ai pas ajouté, dans la commande npm 'devserver' d'argument "--watch" car il est implicite. En effet, chaque modification regénérera automatiquement le bundle associé.
+
+une fois la tâche lancée, vous n'aurez qu'à aller à l'URL http://localhost:9100/ pour vérifier vos développements.

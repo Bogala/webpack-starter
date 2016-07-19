@@ -18,6 +18,10 @@ module.exports = {
                 loaders: ['babel?presets[]=es2015']
             },
             {
+                test: /\.css$/,
+                loader: "style!css"
+            },
+            {
                 test: /\.pug$/,
                 loader: 'pug-html'
             }
