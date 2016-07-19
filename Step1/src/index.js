@@ -11,6 +11,8 @@ import angularAnimate from 'angular-animate';
 // Materail Design lib
 import angularMaterial from 'angular-material';
 
+import helloWorld from './HelloWorld/HelloWorld';
+
 
 /**
  * Manually bootstrap the application when AngularJS and
@@ -24,7 +26,7 @@ angular
 
         let body = document.getElementsByTagName("body")[0];
         let app  = angular
-            .module( appName, [ angularAnimate, angularMaterial ] );
+            .module( appName, [ helloWorld, angularAnimate, angularMaterial ] );
 
         angular.bootstrap( body, [ app.name ], { strictDi: false })
 

@@ -3,3 +3,6 @@ html
     head
         title Testons Webpack
     body
+        div(ng-controller="HelloWorldController as helloWorld")
+            p {{scopedData}}
+            p {{helloWorld.nonScopedData}}

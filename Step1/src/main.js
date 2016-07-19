@@ -1,1 +1,1 @@
-export default angular.module('main', [ users] ).name;
+export default angular.module('main', [ helloWorld] ).name;

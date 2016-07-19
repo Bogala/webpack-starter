@@ -249,37 +249,38 @@ puis ajoutons le module dans l'application AngularJS
 Mince, notre configuration actuelle de Webpack ne sait pas interpréter le CSS!
 
 Installons les modules npm
- ```shell
- $ npm install css-loader style-loader --save-dev
- ```
+```shell
+$ npm install css-loader style-loader --save-dev
+```
 
- Profitons-en aussi, puisque nous avons commencé nos développements en ES2015, pour installer et configurer Babel
- ```shell
+Profitons-en aussi, puisque nous avons commencé nos développements en ES2015, pour installer et configurer Babel
+```shell
  $ npm install --save-dev babel-core babel-preset-es2015 babel-loader
- ```
- Ceci nous servira à avoir des bundles en ES5 (compatible avec un maximum d'explorateurs web).
+```
 
- Puis, adaptons notre configuration en ajoutant les loaders CSS et Babel à notre liste de modules
- ```javascript
-    module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loaders: ['babel?presets[]=es2015']
-            },
-            {
-                test: /\.css$/,
-                loader: "style!css"
-            },
-            {
-                test: /\.pug$/,
-                loader: 'pug-html'
-            }
-        ]
-    },
- ```
- Il est à noter que les loaders sont chargés de bas en haut dans cette liste. 
+Ceci nous servira à avoir des bundles en ES5 (compatible avec un maximum d'explorateurs web).
+
+Puis, adaptons notre configuration en ajoutant les loaders CSS et Babel à notre liste de modules
+```javascript
+module: {
+    loaders: [
+        {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loaders: ['babel?presets[]=es2015']
+        },
+        {
+            test: /\.css$/,
+            loader: "style!css"
+        },
+        {
+            test: /\.pug$/,
+            loader: 'pug-html'
+        }
+    ]
+},
+```
+Il est à noter que les loaders sont chargés de bas en haut dans cette liste. 
 
 Voyons ce qui se passe lorsque nous lançons la tâche 'dev'
 ```shell
@@ -312,3 +313,72 @@ Bon, d'accord... Une fois l'explorateur lancé sur l'URL, la page est blanche...
 Mais lancez le mode développeur et inspecter le code source, vous y verrez l'application angular ainsi que le CSS dans l'HTML. ;)
 
 C'est donc un bon début, il ne nous reste qu'à ajouter un controleur et du graphisme ! 
+
+Commençons par ajouter un controleur. Créons quelques éléments comme suit :
+- src (existant)
+  - HelloWorld
+   - HelloWorldController.js
+   - HelloWorld.js
+
+HelloWorldController.js : 
+``` javascript
+export default class HelloWorldController {
+    constructor($scope) {
+        $scope.scopedData = "Hello World !!!";
+        this.nonScopedData = "The AngularJS Way...";
+
+    }
+};
+HelloWorldController.$inject = ['$scope'];
+```
+
+HelloWorld.js :
+```javascript
+import HelloWorldController from "./HelloWorldController"
+
+let moduleName = angular
+    .module( "helloWorld", [ ] )
+    .controller("HelloWorldController" , HelloWorldController )
+    .name;
+
+export default moduleName;
+```
+
+Modifions maintenant le fichier index.js qui utilisera ce nouveau module en ajoutant l'import qui va bien :
+``` javascript
+import helloWorld from './HelloWorld/HelloWorld'; 
+```
+Et en le référençant  dans notre module principal :
+``` javascript
+angular
+    .element( document )
+    .ready( function() {
+
+        let appName = 'starter-app';
+
+        let body = document.getElementsByTagName("body")[0];
+        let app  = angular
+            .module( appName, [ helloWorld, angularAnimate, angularMaterial ] );
+
+        angular.bootstrap( body, [ app.name ], { strictDi: false })
+
+    });
+```
+
+Rendons visible ces nouveaux éléments via notre index.pug :
+``` jade
+doctype html
+html
+    head
+        title Testons Webpack
+    body
+        div(ng-controller="HelloWorldController as helloWorld")
+            p {{scopedData}}
+            p {{helloWorld.nonScopedData}}
+``` 
+
+Notre Webpack Dev Server devrait nous fournir, maintenant, une page avec deux lignes :
+- La première récupérée du scope
+- La deuxième via les nouvelles bonnes pratiques de binding AngularJS  
+
+La seconde permettra, notamment, d'être plus proche de la compatibilité Angular 2 (pour plus de détails, [la page dédiée de John Papa](https://github.com/johnpapa/angular-styleguide)).
