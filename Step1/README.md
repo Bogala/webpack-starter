@@ -237,26 +237,26 @@ import 'angular-material/angular-material.css!'
 
 import angular from 'angular'
 import material from 'angular-material'
-```
+``` 
 
 puis ajoutons le module dans l'application AngularJS
 
 ```javascript
         let app  = angular
             .module( appName, [ material ] );
-```
+``` 
 
 Mince, notre configuration actuelle de Webpack ne sait pas interpréter le CSS!
 
 Installons les modules npm
 ```shell
 $ npm install css-loader style-loader --save-dev
-```
+```  
 
 Profitons-en aussi, puisque nous avons commencé nos développements en ES2015, pour installer et configurer Babel
 ```shell
  $ npm install --save-dev babel-core babel-preset-es2015 babel-loader
-```
+``` 
 
 Ceci nous servira à avoir des bundles en ES5 (compatible avec un maximum d'explorateurs web).
 
@@ -279,13 +279,13 @@ module: {
         }
     ]
 },
-```
+``` 
 Il est à noter que les loaders sont chargés de bas en haut dans cette liste. 
 
 Voyons ce qui se passe lorsque nous lançons la tâche 'dev'
 ```shell
 $ npm run dev
-```
+``` 
 
 Tout se détroule, normalement, bien mais comment vérifier tout ça dans son explorateur web?
 
@@ -293,7 +293,7 @@ En gros, vous avez deux solutions : installer et configurer un Apache ou un IIS.
 Voyons ensemble cette deuxième solution par la pratique : installons un nouveau package npm :
 ```shell
 $ npm install --save-dev webpack-dev-server
-``` 
+```  
 
 Puis ajoutons une nouvelle tâche dans notre package.json :
 ```json
@@ -302,7 +302,7 @@ Puis ajoutons une nouvelle tâche dans notre package.json :
     "dev": "webpack --bail --progress --profile -d --watch",
     "devserver": "webpack-dev-server --port 9100 --progress --colors"
   },
-```
+``` 
 
 Avec cette nouvelle tâche, vous aurez donc maintenant un serveur nodejs qui fera tourner votre application web.
 Je n'ai pas ajouté, dans la commande npm 'devserver' d'argument "--watch" car il est implicite. En effet, chaque modification regénérera automatiquement le bundle associé.
@@ -373,12 +373,17 @@ html
         title Testons Webpack
     body
         div(ng-controller="HelloWorldController as helloWorld")
-            p {{scopedData}}
+            div(layout="column")
+                md-toolbar(md-scroll-shrink)
+                    .md-toolbar-tools
+                        h3
+                            span {{scopedData}}
             p {{helloWorld.nonScopedData}}
 ``` 
 
-Notre Webpack Dev Server devrait nous fournir, maintenant, une page avec deux lignes :
-- La première récupérée du scope
-- La deuxième via les nouvelles bonnes pratiques de binding AngularJS  
+Notre Webpack Dev Server devrait nous fournir, maintenant, une jolie page.
+- L'entête contient la donnée inscrite dans le scope
+- La ligne juste en dessous contient une donnée de l'instance en cours du controleur  
 
-La seconde permettra, notamment, d'être plus proche de la compatibilité Angular 2 (pour plus de détails, [la page dédiée de John Papa](https://github.com/johnpapa/angular-styleguide)).
+Cette dernière permettra, notamment, d'être plus proche de la compatibilité Angular 2 (pour plus de détails, [la page dédiée de John Papa](https://github.com/johnpapa/angular-styleguide)).
+

@@ -4,5 +4,9 @@ html
         title Testons Webpack
     body
         div(ng-controller="HelloWorldController as helloWorld")
-            p {{scopedData}}
+            div(layout="column")
+                md-toolbar(md-scroll-shrink)
+                    .md-toolbar-tools
+                        h3
+                            span {{scopedData}}
             p {{helloWorld.nonScopedData}}
