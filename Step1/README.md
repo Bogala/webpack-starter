@@ -307,3 +307,8 @@ Avec cette nouvelle tâche, vous aurez donc maintenant un serveur nodejs qui fer
 Je n'ai pas ajouté, dans la commande npm 'devserver' d'argument "--watch" car il est implicite. En effet, chaque modification regénérera automatiquement le bundle associé.
 
 une fois la tâche lancée, vous n'aurez qu'à aller à l'URL http://localhost:9100/ pour vérifier vos développements.
+
+Bon, d'accord... Une fois l'explorateur lancé sur l'URL, la page est blanche...
+Mais lancez le mode développeur et inspecter le code source, vous y verrez l'application angular ainsi que le CSS dans l'HTML. ;)
+
+C'est donc un bon début, il ne nous reste qu'à ajouter un controleur et du graphisme ! 
