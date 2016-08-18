@@ -1,4 +1,4 @@
-import HelloWorldController from "./HelloWorldController"
+import HelloWorldController from "./HelloWorldController";
 
 let moduleName = angular
     .module( "helloWorld", [ ] )

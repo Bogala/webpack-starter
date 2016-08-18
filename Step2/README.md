@@ -1,7 +1,7 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
 # Etape 2 : les tests 
 
-## Petite aparté. 
+## Petit aparté. 
 Voyons un peu l'état de notre configuration Webpack :
 ``` javascript
 var path = require('path');
@@ -170,6 +170,18 @@ config.plugins =  [
 ];
 ```
 
+Ajoutons la partie Uglify pour la production
+``` javascript
+    // Add build specific plugins
+    if (isProd) {
+        config.plugins.push(
+            // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
+            // Minify all javascript, switch loaders to minimizing mode
+            new webpack.optimize.UglifyJsPlugin()
+        )
+    }
+``` 
+
 Profitons-en aussi pour inclure nos source-map selon l'environnement.
 ``` javascript
 if (isProd) {
@@ -183,5 +195,173 @@ Ceci aidera grandement en cas de bug et termine notre aparté.
 Nous pouvons donc (enfin?) passer au vif du sujet : Configurer Karma pour nos tests unitaires !
 
 ## Configuration de Karma avec Webpack
+commençons par installer les modules npm pour karma et jasmine :
+``` shell
+npm install --save-dev angular-mocks jasmine-core phantomjs-prebuilt karma karma-coverage karma-jasmine karma-junit-reporter karma-phantomjs-launcher karma-sourcemap-loader karma-spec-reporter karma-verbose-reporter
+``` 
+
+Puis ajoutons le connecteur karma - webpack
+``` shell
+npm install --save-dev karma-webpack
+``` 
+
+Pour ne pas avoir à ajouter chaque fichier de test dans la configuration Karma, je vous propose d'ajouter un fichier 'tests.webpack.js' dans le répertoire 'src' :
+``` javascript
+import "angular";
+import "angular-mocks/angular-mocks";
+
+const testsContext = require.context(".", true, /.spec$/);
+testsContext.keys().forEach(testsContext);
+``` 
+
+Ce petit bout de code permet de référencer directement angular et angular-mocks mais aussi d'importer automatiquement chaque fichier '*.spec.js'.
+
+Ceci permet de simplifier mais aussi de ne pas avoir à relancer karma lors d'ajout de fichiers.
+
+Passons maintenant à la configuration Karma (karma.conf.js) :
+``` javascript
+// Reference: http://karma-runner.github.io/0.12/config/configuration-file.html
+module.exports = function karmaConfig (config) {
+    config.set({
+        frameworks: [
+            // Reference: https://github.com/karma-runner/karma-jasmine
+            // Set framework to jasmine
+            'jasmine'
+        ],
+
+        reporters: [
+            // Reference: https://github.com/mlex/karma-spec-reporter
+            // Set reporter to print detailed results to console
+            'progress',
+
+            // Reference: https://github.com/karma-runner/karma-coverage
+            // Output code coverage files
+            'coverage'
+        ],
+
+        files: [
+            // Grab all files in the app folder that contain .spec.
+            'src/tests.webpack.js'
+        ],
+
+        preprocessors: {
+            // Reference: http://webpack.github.io/docs/testing.html
+            // Reference: https://github.com/webpack/karma-webpack
+            // Convert files with webpack and load sourcemaps
+            'src/tests.webpack.js': ['webpack', 'sourcemap']
+        },
+
+        browsers: [
+            // Run tests using PhantomJS
+            'PhantomJS'
+        ],
+
+        singleRun: true,
+
+        // Configure code coverage reporter
+        coverageReporter: {
+            dir: 'coverage/',
+            reporters: [
+                {type: 'text-summary'},
+                {type: 'html'}
+            ]
+        },
+
+        webpack: require('./webpack.config'),
+
+        // Hide webpack build information from output
+        webpackMiddleware: {
+            noInfo: 'errors-only'
+        }
+    });
+};
+
+``` 
+
+Ajoutons les scripts npm pour lancer karma :
+``` json
+  "scripts": {
+    "test": "karma start karma.conf.js",
+    "test-watch": "karma start karma.conf.js --auto-watch --no-single-run",
+    "build": "webpack --bail --progress --profile -p",
+    "dev": "webpack --bail --progress --profile -d --watch",
+    "devserver": "webpack-dev-server --port 9100 --progress --colors"
+  },
+``` 
+
+Tel quel, vous devriez pouvoir faire tourner Karma  mais je conseille d'aporter quelques modifications spécifiques aux tests dans la configuration Webpack.
+
+Déjà, il faut savoir si le process en cours correspond au test :
+``` javascript
+var ENV = process.env.npm_lifecycle_event;
+var isTest = ENV === 'test' || ENV === 'test-watch';
+var isProd = ENV === 'build';
+``` 
+
+Avec karma, pas besoin de point d'entrée
+``` javascript
+config.entry = isTest ? {} : {
+        app: './src/index.js'
+    };
+``` 
+
+Ensuite, pour faciliter les corrections, utilisons un inline-source-map :
+``` javascript
+    /**
+     * Devtool
+     * Reference: http://webpack.github.io/docs/configuration.html#devtool
+     * Type of sourcemap to use per build type
+     */
+    if (isTest) {
+        config.devtool = 'inline-source-map';
+    } else if (isProd) {
+        config.devtool = 'source-map';
+    } else {
+        config.devtool = 'eval-source-map';
+    }
+``` 
+
+Pour finir cette phase de préparation, ajoutons un instrumenter pour le code coverage via webpack et babel.
+``` shell
+npm install --save-dev karma-babel-preprocessor babel-plugin-istanbul
+``` 
+
+``` javascript
+config.babel = {
+    presets: ['es2015']
+};
+
+if (isTest)
+    config.babel.plugins = [
+        ["istanbul", {
+            "exclude": [
+                "**/*.spec.js"
+            ]
+        }]
+    ];
+
+config.module = {
+    preLoaders:[],
+    loaders: [
+        {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: "babel"
+        },
+        {
+            test: /\.css$/,
+            loader: "style!css"
+        },
+        {
+            test: /\.pug$/,
+            loader: 'pug-html'
+        }
+    ]
+};
+``` 
+
+Cette dernière petite modif permet aussi de décentraliser la configuration babel.
+
+Nous voilà donc prêts pour écrire notre premier test unitaire !
 
 ## Premiers tests
