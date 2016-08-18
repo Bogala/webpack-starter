@@ -232,7 +232,7 @@ par
 
 ```javascript
 
-import 'angular-material/angular-material.css!'
+import 'angular-material/angular-material.css'
 
 
 import angular from 'angular'
