@@ -170,18 +170,6 @@ config.plugins =  [
 ];
 ```
 
-Ajoutons la partie Uglify pour la production
-``` javascript
-    // Add build specific plugins
-    if (isProd) {
-        config.plugins.push(
-            // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
-            // Minify all javascript, switch loaders to minimizing mode
-            new webpack.optimize.UglifyJsPlugin()
-        )
-    }
-``` 
-
 Profitons-en aussi pour inclure nos source-map selon l'environnement.
 ``` javascript
 if (isProd) {
