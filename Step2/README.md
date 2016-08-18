@@ -365,3 +365,69 @@ Cette dernière petite modif permet aussi de décentraliser la configuration bab
 Nous voilà donc prêts pour écrire notre premier test unitaire !
 
 ## Premiers tests
+
+Bon, nous avons donc une application fonctionnelle et testable. Il ne nous reste qu'à tester notre Controller HelloWorld.
+
+Créons un fichier 'HelloWorldController.spec.js' à coté du fichier qu'il testera, à savoir 'HelloWorldController.js'
+``` javascript
+import helloWorld from './HelloWorld';
+
+describe('Controller: HelloWorld', function() {
+});
+``` 
+
+Ainsi, nous avons un fichier de tests basé sur un module angular (le module HelloWorld créé dans HelloWorld.js et injecté depuis notre main.js).
+
+Initions maintenant le module via :
+``` javascript
+beforeEach(angular.mock.module(helloWorld));
+```
+
+Ceci nous déclare le module spécifiquement pour tests, permettant ainsi d'utiliser les fonctions d'injection d'angular mocks.
+
+De quoi avons nous besoin tester notre controller? D'une méthode d'exécution du controller ainsi que de sa dépendance. Souvenez-vous,
+nous utilisons '$scope' dans notre controller.
+
+``` javascript
+let $controller, $scope;
+
+beforeEach(angular.mock.inject(function(_$controller_, $rootScope) {
+    $controller = _$controller_;
+    $scope = $rootScope.$new();
+}));
+``` 
+Vous aurez remarqué que nous n'injectons pas le $scope directement, nous en créons un depuis le $rootScope. Ceci est logique puisqu'il ne sagit pas d'une vraie application angular (pas d'exécution de template).
+
+Pour tester et exécuter notre controller, il suffit donc d'utiliser la méthode $controller en injectant notre scope créé avant chaque test:
+``` javascript
+let ctrl = $controller('HelloWorldController', {'$scope' : $scope});
+``` 
+
+Nous y sommes ! Il ne reste qu'à tester les deux propriétés de notre controller.
+Ce qui nous donne au final :
+
+``` javascript
+import helloWorld from './HelloWorld';
+
+describe('Controller: HelloWorld', function() {
+    let $controller, $scope;
+
+    beforeEach(angular.mock.module(helloWorld));
+
+    beforeEach(angular.mock.inject(function(_$controller_, $rootScope) {
+        $controller = _$controller_;
+        $scope = $rootScope.$new();
+    }));
+
+    it('nonScopedData is initialized to "The AngularJS Way..."', function() {
+        let ctrl = $controller('HelloWorldController', {'$scope' : $scope});
+        expect(ctrl.nonScopedData).toBe("The AngularJS Way...");
+    });
+
+    it('scopedData is initialized to "Hello World !!!"', function() {
+        let ctrl = $controller('HelloWorldController', {'$scope' : $scope});
+        expect($scope.scopedData).toBe("Hello World !!!");
+    });
+});
+
+``` 
