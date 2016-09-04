@@ -80,7 +80,8 @@ module.exports = function makeWebpackConfig () {
         new HtmlWebpackPlugin({
             inject: "head",
             filename: 'index.html',
-            template: './src/index.pug'
+            template: './src/index.pug',
+            chunks: ['app']
         })
     ];
 

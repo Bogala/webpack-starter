@@ -1,8 +1,6 @@
 export default class HelloWorldController {
     constructor($scope) {
-        $scope.scopedData = "Hello World !!!";
-        this.nonScopedData = "The AngularJS ";
-
+        this.nonScopedData = "My main application";
     }
 };
 HelloWorldController.$inject = ['$scope'];

@@ -1,12 +1,7 @@
 doctype html
 html
     head
+        base(href="/")
         title Testons Webpack
-    body
-        div(ng-controller="HelloWorldController as helloWorld")
-            div(layout="column")
-                md-toolbar(md-scroll-shrink)
-                    .md-toolbar-tools
-                        h3
-                            span {{scopedData}}
-
+    body(ng-cloak)
+        app
