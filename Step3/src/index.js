@@ -11,7 +11,9 @@ import angularAnimate from 'angular-animate';
 // Materail Design lib
 import angularMaterial from 'angular-material';
 
-import helloWorld from './HelloWorld/HelloWorld';
+import '@angular/router/angular1/angular_1_router';
+
+import helloWorld from './helloWorld/HelloWorld';
 
 
 /**
@@ -26,8 +28,20 @@ angular
 
         let body = document.getElementsByTagName("body")[0];
         let app  = angular
-            .module( appName, [ helloWorld, angularAnimate, angularMaterial ] );
+            .module( appName, [ angularAnimate, angularMaterial, 'ngComponentRouter', helloWorld ] )
+            .config(function($locationProvider) {
+                $locationProvider.html5Mode(true)
+            })
+            .value('$routerRootComponent', 'app')
+            .component('app', {
+                template: require('./app.pug')
+            });
 
         angular.bootstrap( body, [ app.name ], { strictDi: false })
 
     });
+
+/*,
+ $routeConfig: [
+ {path: '/hello-world/...', name: 'HelloWorld', component: 'helloWorld', useAsDefault: true}
+ ]*/

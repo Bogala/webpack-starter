@@ -2,7 +2,10 @@ import HelloWorldController from "./HelloWorldController";
 
 let moduleName = angular
     .module( "helloWorld", [ ] )
-    .controller("HelloWorldController" , HelloWorldController )
+    .component("helloWorld", {
+        template: require('./HelloWorld.pug'),
+        controller: HelloWorldController
+    })
     .name;
 
 export default moduleName;

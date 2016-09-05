@@ -65,20 +65,96 @@ Attention, dans notre exemple, j'ai volontairement modifié la configuration de 
 
 Maintenant que le HMR est fin prêt, il nous faut revoir un peu l'organisation de notre code.
 
+### Components
 Pour se faire, passons en mode composants et ajoutons un système de gestion de routes adapté.
 
-Tout d'abord, installons la gestion des routes par composants :
-``` shell
-npm install @angular/router@0.2.0 --save
-``` 
 
-Puis, revoyons un peu notre application AngularJS, à commencer par notre page d'index :
+Revoyons un peu notre application AngularJS, à commencer par notre page d'index :
 ``` pug
 doctype html
 html
     head
-        base(href="/")
         title Testons Webpack
     body(ng-cloak)
         app
 ``` 
+
+Vous aurez remarqué une nouvelle balise "app". Celle-ci correspond à un nouveau composant angularJS.
+Travaillons son template avant de le déclarer (app.pug) :
+``` pug
+md-toolbar(layout="row")
+    .md-toolbar-tools
+        h1 Webpack Starter
+div(flex,layout="row")
+    md-content(flex, id="content")
+        hello-world
+``` 
+
+
+Ajoutons maintenant le composant en tant que tel dans l'index.js :
+``` javascript
+        let app  = angular
+            .module( appName, [ angularAnimate, angularMaterial, helloWorld ] )
+            .component('app', {
+                template: require('./app.pug')
+            });
+``` 
+
+Nous pouvons donc remarquer que l'application est ici directement utilisable.
+
+Profitons-en pour transformer notre HelloWorldController en composant :
+Commençons par le déclarer via HelloWorld.js
+``` javascript
+import HelloWorldController from "./HelloWorldController";
+
+let moduleName = angular
+    .module( "helloWorld", [ ] )
+    .component("helloWorld", {
+        template: require('./HelloWorld.pug'),
+        controller: HelloWorldController
+    })
+    .name;
+
+export default moduleName;
+``` 
+
+Nous avons retiré la déclaration .controller(...) pour le remplacer par un component.
+Puisque nous avons ajouté un 'require' sur un nouveau fichier pug, créons-le :
+``` pug
+span {{$ctrl.nonScopedData}}
+``` 
+
+Le contenu est simple mais nous permettra de voir si ça fonctionne : Lancez le devserver, allez sur l'URL http://localhost:9100/, changez la valeur de 'nonScopedData' dans le code puis admirez.
+La page change d'elle-même sans se recharger (rien de tel pour briller en société !)
+
+### ngComponentRoute
+Pour jouer avec les routes, nous avons l'embaras du choix : ngRoute, ui-route ou ngComponentRouter.
+Il y a déjà beaucoup de tutoriels sur ngRoute ou ui-route. Utilisons quelque chose de moins commun : ngComponentRouter.
+De plus, son utilisation nous donnera un aperçu de qui existera sur Angular2.
+
+Commençons par l'installer :
+``` shell
+npm install @angular/router@0.1.0 --save
+``` 
+
+
+Ensuite, un peu de préparation s'impose sur l'index.js.
+Importons notre nouveau module
+``` javascript
+import '@angular/router/angular1/angular_1_router';
+``` 
+
+Activons le mode html5 et définissons notre composant web principal pour la gestion des routes
+``` javascript
+        let app  = angular
+            .module( appName, [ angularAnimate, angularMaterial, 'ngComponentRouter', helloWorld ] )
+            .config(function($locationProvider) {
+                $locationProvider.html5Mode(true)
+            })
+            .value('$routerRootComponent', 'app')
+            .component('app', {
+                template: require('./app.pug')
+            });
+``` 
+
+[SPOIL]Une autre nouvelle balise : "ng-outlet" correspondant aux composants routés (un peu comme un ng-view).
