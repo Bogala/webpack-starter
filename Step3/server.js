@@ -9,7 +9,12 @@ var WebpackDevServer = require('webpack-dev-server');
 var webpack = require('webpack');
 var config = require('./webpack.config.js');
 
-config.entry.app = ['webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:9100/', './src/index.js'];
+for (bundle in config.entry) {
+    if (config.entry.hasOwnProperty(bundle) && isNaN(bundle)) {
+        bundle = ['webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:9100/', bundle];
+    }
+}
+
 config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
 var path = require('path');

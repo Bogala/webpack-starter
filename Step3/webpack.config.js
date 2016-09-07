@@ -12,7 +12,8 @@ module.exports = function makeWebpackConfig () {
     var outputPath = path.join(__dirname, "dist");
 
     config.entry = isTest ? {} : {
-            app: './src/index.js'
+            app: './src/index.js',
+            "hello-world": './src/HelloWorld/HelloWorld.js'
         };
 
     config.output = {
