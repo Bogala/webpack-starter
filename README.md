@@ -1,4 +1,5 @@
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]() 
+[![codebeat badge](https://codebeat.co/badges/a8f2a4ff-ad5a-4304-95f7-b35469243510)](https://codebeat.co/projects/github-com-bogala-webpack-starter)
 # Webpack
 [![webpack](https://webpack.github.io/assets/logo.png)](https://webpack.github.io)
 
